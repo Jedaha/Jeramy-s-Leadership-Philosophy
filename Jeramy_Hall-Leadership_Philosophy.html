@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leadership Philosophy - Jeramy Hall</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00ffff;
+            --secondary: #ff00ff;
+            --accent: #ffff00;
+            --dark: #0a0a0a;
+            --light: #ffffff;
+            --glow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            overflow: hidden;
+            cursor: none;
+            position: relative;
+            height: 100vh;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+        }
+
+        .cursor-follower {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Canvas Backgrounds */
+        #matrix-rain, #particle-web, #wave-field {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Main Container */
+        .presentation-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            perspective: 2000px;
+            transform-style: preserve-3d;
+        }
+
+        /* Slides */
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateZ(-1000px) rotateY(90deg);
+            transition: all 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateZ(0) rotateY(0);
+        }
+
+        .slide.prev {
+            transform: translateZ(-1000px) rotateY(-90deg);
+        }
+
+        .slide.next {
+            transform: translateZ(-1000px) rotateY(90deg);
+        }
+
+        /* Slide Titles */
+        .slide h2 {
+            background: rgba(10, 10, 10, 0.7);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+            display: inline-block;
+        }
+
+        /* SLIDE 0: Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .quantum-loader {
+            width: 200px;
+            height: 200px;
+            position: relative;
+        }
+
+        .quantum-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: quantum-spin 2s linear infinite;
+        }
+
+        .quantum-ring:nth-child(2) {
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            border-top-color: var(--secondary);
+            animation-duration: 1.5s;
+            animation-direction: reverse;
+        }
+
+        .quantum-ring:nth-child(3) {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            border-top-color: var(--accent);
+            animation-duration: 1s;
+        }
+
+        @keyframes quantum-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 30px;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            opacity: 0.8;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.3; }
+        }
+
+        /* SLIDE 1: Title with Glitch Effect */
+        .glitch-title {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            position: relative;
+            letter-spacing: 0.05em;
+            animation: glitch-skew 4s infinite linear alternate-reverse;
+        }
+
+        .glitch-title::before,
+        .glitch-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-title::before {
+            animation: glitch-1 0.5s infinite;
+            color: var(--primary);
+            z-index: -1;
+        }
+
+        .glitch-title::after {
+            animation: glitch-2 0.5s infinite;
+            color: var(--secondary);
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            20% { clip-path: inset(33% 0 40% 0); transform: translate(-2px, 2px); }
+            40% { clip-path: inset(20% 0 60% 0); transform: translate(2px, -2px); }
+            60% { clip-path: inset(70% 0 10% 0); transform: translate(-2px, 2px); }
+            80% { clip-path: inset(10% 0 80% 0); transform: translate(2px, -2px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            20% { clip-path: inset(60% 0 20% 0); transform: translate(2px, 2px); }
+            40% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, -2px); }
+            60% { clip-path: inset(40% 0 40% 0); transform: translate(2px, 2px); }
+            80% { clip-path: inset(80% 0 10% 0); transform: translate(-2px, -2px); }
+        }
+
+        @keyframes glitch-skew {
+            0%, 100% { transform: skew(0deg); }
+            20% { transform: skew(-2deg); }
+            40% { transform: skew(1deg); }
+            60% { transform: skew(-1deg); }
+            80% { transform: skew(2deg); }
+        }
+
+        .subtitle-reveal {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fade-up 1s ease 1s forwards;
+        }
+
+        .demo-text {
+            font-size: 1rem;
+            margin-top: 3rem;
+            opacity: 0;
+            color: var(--primary);
+            letter-spacing: 2px;
+            animation: fade-up 1s ease 2s forwards;
+        }
+
+        @keyframes fade-up {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* SLIDE 2: About Me */
+        .about-container {
+            max-width: 1200px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .about-title {
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .about-content {
+            background: rgba(10, 10, 10, 0.85);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 3rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-content::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--primary));
+            border-radius: 20px;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .about-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .about-highlight {
+            color: var(--primary);
+            font-weight: 600;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        /* SLIDE 3: Core Principles */
+        .principles-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            padding: 2rem;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .principle-card {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+            cursor: pointer;
+        }
+
+        .principle-card:hover {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(255, 0, 255, 0.15)), rgba(10, 10, 10, 0.85);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.15), rgba(255, 255, 0, 0.15)), rgba(10, 10, 10, 0.85);
+            border-color: rgba(255, 0, 255, 0.3);
+        }
+
+        .principle-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+            stroke: var(--primary);
+            fill: none;
+            stroke-width: 2;
+            animation: float 3s ease-in-out infinite, icon-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes icon-glow {
+            from { filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8)); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .principle-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* SLIDE 4: Interactive Venn Diagram */
+        .venn-container {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .venn-circle {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            transition: all 1s ease;
+            mix-blend-mode: screen;
+        }
+
+        .servant-circle {
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.6), rgba(0, 255, 255, 0.1));
+            left: calc(50% - 250px);
+            animation: pulse-cyan 3s ease-in-out infinite;
+        }
+
+        .coaching-circle {
+            background: radial-gradient(circle, rgba(255, 0, 255, 0.6), rgba(255, 0, 255, 0.1));
+            right: calc(50% - 250px);
+            animation: pulse-magenta 3s ease-in-out infinite;
+        }
+
+        .venn-label {
+            position: absolute;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px currentColor;
+            top: 80px;
+        }
+
+        .servant-label {
+            left: calc(50% - 350px);
+            color: var(--primary);
+        }
+
+        .coaching-label {
+            right: calc(50% - 350px);
+            color: var(--secondary);
+        }
+
+        .venn-details {
+            position: absolute;
+            width: 350px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 1.5rem;
+            background: rgba(10, 10, 10, 0.8);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .servant-details {
+            left: 10px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .coaching-details {
+            right: 10px;
+            border: 1px solid rgba(255, 0, 255, 0.3);
+        }
+
+        .venn-details h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .venn-details ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .venn-details li {
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .venn-details li:before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+        }
+
+        @keyframes pulse-cyan {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes pulse-magenta {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .intersection-text {
+            position: absolute;
+            z-index: 10;
+            font-size: 1.2rem;
+            text-align: center;
+            max-width: 200px;
+            animation: glow-text 2s ease-in-out infinite;
+        }
+
+        @keyframes glow-text {
+            0%, 100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); }
+            50% { text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 40px rgba(0, 255, 255, 0.8); }
+        }
+
+        /* SLIDE 5: Communication Matrix */
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 900px;
+            width: 100%;
+            padding: 2rem;
+        }
+
+        .matrix-cell {
+            position: relative;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.05), rgba(0, 0, 0, 0.9));
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .matrix-cell:hover {
+            transform: translateZ(50px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 255, 255, 0.3);
+            border-color: var(--primary);
+        }
+
+        .matrix-content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, transparent, rgba(0, 255, 255, 0.1));
+            transition: all 0.3s ease;
+        }
+
+        .matrix-cell:hover .matrix-content {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+        }
+
+        .matrix-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: rotate-3d 5s linear infinite;
+        }
+
+        @keyframes rotate-3d {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        /* SLIDE 6: Philosophy Statement */
+        .philosophy-container {
+            max-width: 1000px;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(10, 10, 10, 0.85);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .philosophy-text {
+            font-size: 1.8rem;
+            line-height: 1.8;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .word-animate {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px) rotateX(90deg);
+            animation: word-reveal 0.6s ease forwards;
+            animation-delay: calc(var(--word-index) * 0.05s);
+        }
+
+        @keyframes word-reveal {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        .signature-container {
+            margin-top: 3rem;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .digital-signature {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 3rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: signature-draw 3s ease-in-out;
+            position: relative;
+        }
+
+        @keyframes signature-draw {
+            0% {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Navigation */
+        .nav-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--primary);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: var(--glow);
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, var(--primary), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .nav-btn:hover::before {
+            animation: shine 0.5s ease;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: rotate(45deg) translateY(-100%);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(45deg) translateY(100%);
+                opacity: 0;
+            }
+        }
+
+        /* Progress Indicator */
+        .progress-container {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .progress-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .progress-dot.active {
+            background: var(--primary);
+            box-shadow: var(--glow);
+            transform: scale(1.3);
+        }
+
+        /* Keyboard Hints */
+        .keyboard-hints {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .keyboard-hints:hover {
+            opacity: 1;
+        }
+
+        .key-hint {
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .glitch-title {
+                font-size: clamp(2rem, 10vw, 4rem);
+            }
+
+            .principles-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .venn-container {
+                width: 100%;
+                height: 400px;
+            }
+
+            .venn-circle {
+                width: 250px;
+                height: 250px;
+            }
+
+            .matrix-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .keyboard-hints {
+                display: none;
+            }
+        }
+
+        /* Particle Trail Effect */
+        .particle-trail {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9997;
+        }
+
+        .trail-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: trail-fade 1s ease-out forwards;
+        }
+
+        @keyframes trail-fade {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="quantum-loader">
+            <div class="quantum-ring"></div>
+            <div class="quantum-ring"></div>
+            <div class="quantum-ring"></div>
+        </div>
+        <div class="loading-text">INITIALIZING EXPERIENCE</div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-follower" id="cursorFollower"></div>
+    <div class="particle-trail" id="particleTrail"></div>
+
+    <!-- Canvas Backgrounds -->
+    <canvas id="matrix-rain"></canvas>
+    <canvas id="particle-web"></canvas>
+    <canvas id="wave-field"></canvas>
+
+    <!-- Main Presentation Container -->
+    <div class="presentation-container">
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active" data-slide="1">
+            <h1 class="glitch-title" data-text="LEADERSHIP">LEADERSHIP</h1>
+            <p class="subtitle-reveal">Jeramy Hall</p>
+            <p class="demo-text">⚡ NOT A POWERPOINT ⚡</p>
+        </div>
+
+        <!-- Slide 2: About Me -->
+        <div class="slide" data-slide="2">
+            <div class="about-container">
+                <h2 class="about-title">About Me</h2>
+                <div class="about-content">
+                    <p class="about-text">
+                        <span class="about-highlight">Athletic scholarships</span> opened the door for me to be the first of four generations to attend college. 
+                        I always intended to fulfil my passion for helping others achieve beyond what they thought capable. 
+                        After realizing a teaching/coaching career wouldn't cover my student loans, I continued to coach 
+                        <span class="about-highlight">K-12 Competitive Swimming</span>, 
+                        <span class="about-highlight">High School Diving</span>, and 
+                        <span class="about-highlight">Football</span> while earning my business degree.
+                        <br><br>
+                        The core principles I've held dear in coaching remain an 
+                        <span class="about-highlight">integral part of my leadership philosophy</span> today.
+                        Every athlete I've coached, every team I've built, has reinforced my belief that 
+                        true leadership is about unlocking potential in others.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Core Principles -->
+        <div class="slide" data-slide="3">
+            <h2 style="font-size: 3rem; margin-bottom: 3rem; text-transform: uppercase; letter-spacing: 3px;">Core Principles</h2>
+            <div class="principles-container">
+                <div class="principle-card">
+                    <div class="card-face">
+                        <svg class="principle-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke-dasharray="2 1"/>
+                            <circle cx="12" cy="12" r="6"/>
+                            <circle cx="12" cy="12" r="2"/>
+                        </svg>
+                        <h3 class="principle-title">HONESTY</h3>
+                        <p>Honest with myself when being challenged, and absolute when giving direct and constructive feedback, even when difficult</p>
+                    </div>
+                    <div class="card-face card-back">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">In Practice</h3>
+                        <p>Direct, constructive feedback</p>
+                        <p>Honest self-reflection</p>
+                        <p>No sugar-coating</p>
+                        <p>Truth over comfort</p>
+                    </div>
+                </div>
+                <div class="principle-card">
+                    <div class="card-face">
+                        <svg class="principle-icon" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="18" height="18" rx="2" fill="none"/>
+                            <rect x="7" y="7" width="10" height="10" rx="1" fill="none"/>
+                            <rect x="11" y="11" width="2" height="2"/>
+                        </svg>
+                        <h3 class="principle-title">TRANSPARENCY</h3>
+                        <p>An open book to any inquiry, fully appreciating the value of being upfront about providing reasoning behind any actions</p>
+                    </div>
+                    <div class="card-face card-back">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">In Practice</h3>
+                        <p>Clear reasoning</p>
+                        <p>Shared decision-making</p>
+                        <p>No hidden agendas</p>
+                        <p>Information flows freely</p>
+                    </div>
+                </div>
+                <div class="principle-card">
+                    <div class="card-face">
+                        <svg class="principle-icon" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                        <h3 class="principle-title">ALTRUISM</h3>
+                        <p>Never hesitant to lose a step backwards if it means helping others take several forwards</p>
+                    </div>
+                    <div class="card-face card-back">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">In Practice</h3>
+                        <p>Servant leadership</p>
+                        <p>Empowering others</p>
+                        <p>Sacrificial mindset</p>
+                        <p>Long-term team growth</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Leadership Style Venn -->
+        <div class="slide" data-slide="4">
+            <h2 style="font-size: 3rem; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 3px;">Leadership Fusion</h2>
+            <div class="venn-container">
+                <div class="venn-circle servant-circle"></div>
+                <div class="venn-circle coaching-circle"></div>
+                <div class="venn-label servant-label">SERVANT</div>
+                <div class="venn-label coaching-label">COACHING</div>
+                <div class="venn-details servant-details">
+                    <h3 style="color: var(--primary);">Servant Leadership</h3>
+                    <ul>
+                        <li>Empowers team members</li>
+                        <li>Removes obstacles</li>
+                        <li>Prioritizes team needs</li>
+                        <li>Builds trust through service</li>
+                    </ul>
+                </div>
+                <div class="venn-details coaching-details">
+                    <h3 style="color: var(--secondary);">Coaching Approach</h3>
+                    <ul>
+                        <li>Develops individual strengths</li>
+                        <li>Provides continuous feedback</li>
+                        <li>Strategically aligns skills</li>
+                        <li>Celebrates progress</li>
+                    </ul>
+                </div>
+                <div class="intersection-text">
+                    <strong>SYNERGY</strong><br>
+                    Where service meets development
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Communication Matrix -->
+        <div class="slide" data-slide="5">
+            <h2 style="font-size: 3rem; margin-bottom: 3rem; text-transform: uppercase; letter-spacing: 3px;">Communication Matrix</h2>
+            <div class="matrix-grid">
+                <div class="matrix-cell">
+                    <div class="matrix-content">
+                        <div class="matrix-icon">👤</div>
+                        <h3>One-on-Ones</h3>
+                        <p>Personalized coaching sessions</p>
+                    </div>
+                </div>
+                <div class="matrix-cell">
+                    <div class="matrix-content">
+                        <div class="matrix-icon">👥</div>
+                        <h3>Team Sync</h3>
+                        <p>Collaborative problem-solving</p>
+                    </div>
+                </div>
+                <div class="matrix-cell">
+                    <div class="matrix-content">
+                        <div class="matrix-icon">🎯</div>
+                        <h3>Direct Approach</h3>
+                        <p>Face-to-face for critical moments</p>
+                    </div>
+                </div>
+                <div class="matrix-cell">
+                    <div class="matrix-content">
+                        <div class="matrix-icon">🔄</div>
+                        <h3>Adaptive Style</h3>
+                        <p>Tailored to individual needs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Philosophy Statement -->
+        <div class="slide" data-slide="6">
+            <div class="philosophy-container">
+                <h2 style="font-size: 3rem; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 3px;">My Philosophy</h2>
+                <div class="philosophy-text" id="philosophyText">
+                    My leadership philosophy is built on a foundation of service and growth. I lead by empowering others, fostering radical candor, and ensuring every team member has the clarity and support to excel. Through honest feedback, transparent decisions, and prioritizing team development above personal advancement, I create environments where individuals achieve their full potential.
+                </div>
+                <div class="signature-container">
+                    <div class="digital-signature">Jeramy Hall</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="nav-btn" id="prevBtn">←</div>
+        <div class="nav-btn" id="nextBtn">→</div>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="progress-container" id="progressContainer"></div>
+
+    <!-- Keyboard Hints -->
+    <div class="keyboard-hints">
+    </div>
+
+    <script>
+        // Core Variables
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let isTransitioning = false;
+
+        // Initialize
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+                initPresentation();
+            }, 2000);
+        });
+
+        function initPresentation() {
+            setupProgressIndicator();
+            setupEventListeners();
+            setupCustomCursor();
+            initBackgroundEffects();
+            animateSlide(0);
+        }
+
+        // Progress Indicator
+        function setupProgressIndicator() {
+            const container = document.getElementById('progressContainer');
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot';
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(i));
+                container.appendChild(dot);
+            }
+        }
+
+        function updateProgress() {
+            document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // Navigation
+        function goToSlide(index) {
+            if (isTransitioning || index === currentSlide || index < 0 || index >= totalSlides) return;
+            
+            isTransitioning = true;
+            const previousSlide = currentSlide;
+            
+            slides[currentSlide].classList.remove('active');
+            slides[currentSlide].classList.add(index > currentSlide ? 'prev' : 'next');
+            
+            currentSlide = index;
+            
+            slides[currentSlide].classList.remove('prev', 'next');
+            setTimeout(() => {
+                slides[currentSlide].classList.add('active');
+                animateSlide(currentSlide);
+                updateProgress();
+                setTimeout(() => {
+                    isTransitioning = false;
+                }, 1500);
+            }, 50);
+        }
+
+        function nextSlide() {
+            goToSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            goToSlide(currentSlide - 1);
+        }
+
+        // Slide Animations
+        function animateSlide(index) {
+            switch(index) {
+                case 0:
+                    // Title slide animations already handled by CSS
+                    break;
+                case 1:
+                    animateAboutMe();
+                    break;
+                case 2:
+                    animatePrincipleCards();
+                    break;
+                case 3:
+                    animateVennDiagram();
+                    break;
+                case 4:
+                    animateMatrix();
+                    break;
+                case 5:
+                    animatePhilosophy();
+                    break;
+            }
+        }
+
+        function animateAboutMe() {
+            const content = slides[1].querySelector('.about-content');
+            content.style.opacity = '0';
+            content.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                content.style.transition = 'all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                content.style.opacity = '1';
+                content.style.transform = 'scale(1)';
+            }, 100);
+        }
+
+        function animatePrincipleCards() {
+            const cards = slides[2].querySelectorAll('.principle-card');
+            cards.forEach((card, i) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(50px) rotateX(90deg)';
+                    setTimeout(() => {
+                        card.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0) rotateX(0)';
+                    }, 100);
+                }, i * 200);
+            });
+        }
+
+        function animateVennDiagram() {
+            const circles = slides[3].querySelectorAll('.venn-circle');
+            circles.forEach((circle, i) => {
+                setTimeout(() => {
+                    circle.style.transform = 'scale(0)';
+                    setTimeout(() => {
+                        circle.style.transition = 'transform 1s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                        circle.style.transform = 'scale(1)';
+                    }, 100);
+                }, i * 300);
+            });
+        }
+
+        function animateMatrix() {
+            const cells = slides[4].querySelectorAll('.matrix-cell');
+            cells.forEach((cell, i) => {
+                setTimeout(() => {
+                    cell.style.opacity = '0';
+                    cell.style.transform = 'scale(0) rotate(180deg)';
+                    setTimeout(() => {
+                        cell.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                        cell.style.opacity = '1';
+                        cell.style.transform = 'scale(1) rotate(0)';
+                    }, 100);
+                }, i * 150);
+            });
+        }
+
+        function animatePhilosophy() {
+            const text = document.getElementById('philosophyText');
+            const words = text.textContent.trim().split(' ');
+            text.innerHTML = words.map((word, i) => 
+                `<span class="word-animate" style="--word-index: ${i}">${word}</span>`
+            ).join(' ');
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            document.getElementById('prevBtn').addEventListener('click', prevSlide);
+            document.getElementById('nextBtn').addEventListener('click', nextSlide);
+            
+            document.addEventListener('keydown', (e) => {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        prevSlide();
+                        break;
+                    case 'ArrowRight':
+                    case ' ':
+                        e.preventDefault();
+                        nextSlide();
+                        break;
+                    case 'f':
+                    case 'F':
+                        toggleFullscreen();
+                        break;
+                }
+            });
+
+            // Touch gestures for mobile
+            let touchStartX = 0;
+            document.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+            });
+
+            document.addEventListener('touchend', (e) => {
+                const touchEndX = e.changedTouches[0].clientX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) nextSlide();
+                    else prevSlide();
+                }
+            });
+        }
+
+        // Custom Cursor
+        function setupCustomCursor() {
+            const cursor = document.getElementById('cursor');
+            const follower = document.getElementById('cursorFollower');
+            const trail = document.getElementById('particleTrail');
+            
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                
+                setTimeout(() => {
+                    follower.style.left = e.clientX + 'px';
+                    follower.style.top = e.clientY + 'px';
+                }, 100);
+
+                // Create particle trail
+                if (Math.random() > 0.9) {
+                    const particle = document.createElement('div');
+                    particle.className = 'trail-particle';
+                    particle.style.left = e.clientX + 'px';
+                    particle.style.top = e.clientY + 'px';
+                    trail.appendChild(particle);
+                    setTimeout(() => particle.remove(), 1000);
+                }
+            });
+
+            document.addEventListener('mousedown', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(0.8)';
+            });
+
+            document.addEventListener('mouseup', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+        }
+
+        // Background Effects
+        function initBackgroundEffects() {
+            initMatrixRain();
+            initParticleWeb();
+            initWaveField();
+        }
+
+        function initMatrixRain() {
+            const canvas = document.getElementById('matrix-rain');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}";
+            const matrixArray = matrix.split("");
+            const fontSize = 10;
+            const columns = canvas.width / fontSize;
+            const drops = [];
+
+            for (let x = 0; x < columns; x++) {
+                drops[x] = 1;
+            }
+
+            function drawMatrix() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#0F0';
+                ctx.font = fontSize + 'px monospace';
+
+                for (let i = 0; i < drops.length; i++) {
+                    const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+            }
+
+            setInterval(drawMatrix, 35);
+        }
+
+        function initParticleWeb() {
+            const canvas = document.getElementById('particle-web');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const particleCount = 100;
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.vx = Math.random() * 2 - 1;
+                    this.vy = Math.random() * 2 - 1;
+                    this.radius = Math.random() * 2 + 1;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
+                    if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0, 255, 255, 0.5)';
+                    ctx.fill();
+                }
+            }
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+
+                // Draw connections
+                particles.forEach((p1, i) => {
+                    particles.slice(i + 1).forEach(p2 => {
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < 100) {
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(0, 255, 255, ${0.2 * (1 - distance / 100)})`;
+                            ctx.stroke();
+                        }
+                    });
+                });
+
+                requestAnimationFrame(animateParticles);
+            }
+
+            animateParticles();
+        }
+
+        function initWaveField() {
+            const canvas = document.getElementById('wave-field');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let time = 0;
+
+            function drawWave() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                for (let i = 0; i < canvas.width; i += 20) {
+                    const y = canvas.height / 2 + Math.sin((i + time) * 0.01) * 100 * Math.sin(time * 0.005);
+                    ctx.beginPath();
+                    ctx.arc(i, y, 2, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsl(${(i + time) % 360}, 100%, 50%)`;
+                    ctx.fill();
+                }
+
+                time += 5;
+                requestAnimationFrame(drawWave);
+            }
+
+            drawWave();
+        }
+
+        // Utility Functions
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Window Resize Handler
+        window.addEventListener('resize', () => {
+            const canvases = ['matrix-rain', 'particle-web', 'wave-field'];
+            canvases.forEach(id => {
+                const canvas = document.getElementById(id);
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        });
+    </script>
+</body>
+</html>
